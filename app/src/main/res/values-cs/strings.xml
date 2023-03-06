@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GitHub Repositories</string>
+    <string name="button_info_description">Info</string>
+    <string name="title_about">O aplikaci</string>
+    <string name="version">Verze:</string>
+    <string name="date_of_build">Datum sestavení:</string>
+    <string name="author">Autor:</string>
+</resources>
