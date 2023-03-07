@@ -28,8 +28,8 @@ fun GitHubRepositoriesNavHost(
         composable("home") {
             HomeScreen(
                 viewModel = hiltViewModel(),
-                onUserClick = {
-                    navController.navigate("detail/${it.id}")
+                onRepositoryClick = {
+                    navController.navigate("detail/${it.name}")
                 },
                 onAboutClick = {
                     navController.navigate("about")
