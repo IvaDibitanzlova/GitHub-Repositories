@@ -5,14 +5,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cz.dibitanzlova.githubrepositories.R
+import cz.dibitanzlova.githubrepositories.compose.detail.DetailScreenMainComposable
+import cz.dibitanzlova.githubrepositories.model.DetailState
 import cz.dibitanzlova.githubrepositories.viewmodels.AboutViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -22,10 +26,24 @@ fun AboutScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
 ) {
-    val version = viewModel.version
-    val dateOfBuild = viewModel.dateOfBuild
-    val author = viewModel.author
+    AboutScreenMainComposable(
+        viewModel.version,
+        viewModel.dateOfBuild,
+        viewModel.author,
+        modifier,
+        onBackClick
+    )
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AboutScreenMainComposable(
+    version: String,
+    dateOfBuild: String,
+    author: String,
+    modifier: Modifier,
+    onBackClick: () -> Unit = {}
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,5 +94,15 @@ fun AboutScreen(
             }
         }
     )
+}
 
+@Preview
+@Composable
+fun AboutScreenPreview() {
+    AboutScreenMainComposable(
+        version = "1.0",
+        dateOfBuild = "8. 3. 2023",
+        author = "Iva Dibitanzlová",
+        modifier = Modifier
+    )
 }

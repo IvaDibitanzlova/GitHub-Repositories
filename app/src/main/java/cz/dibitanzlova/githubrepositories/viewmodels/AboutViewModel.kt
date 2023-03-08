@@ -14,6 +14,6 @@ class AboutViewModel @Inject internal constructor(
 ) : ViewModel() {
     val author = "Iva Dibitanzlová"
     val version = BuildConfig.VERSION_NAME
-    val dateOfBuild = DateFormat.getDateInstance().format(BuildConfig.BUILD_TIME.toLong())
+    val dateOfBuild: String = DateFormat.getDateInstance().format(BuildConfig.BUILD_TIME.toLong())
 
 }

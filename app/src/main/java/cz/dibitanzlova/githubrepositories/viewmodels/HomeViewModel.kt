@@ -5,32 +5,65 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.dibitanzlova.githubrepositories.data.GitHubDataRepository
+import cz.dibitanzlova.githubrepositories.model.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject internal constructor(
     private val savedStateHandle: SavedStateHandle,
-    repository: GitHubDataRepository,
+    private val repository: GitHubDataRepository,
 ) : ViewModel() {
 
-    // private val _status = MutableStateFlow(ResponseModel("", "", ""))
-    //val status: StateFlow<ResponseModel> = _status.asStateFlow()
+    private val _state = MutableStateFlow(HomeState("", emptyList()))
+    val state: StateFlow<HomeState> = _state.asStateFlow()
 
-    init {
+    // update the query so user can see changes on screen
+    fun onQueryChange(query: String) {
+        _state.update { currentState ->
+            currentState.copy(query = query)
+        }
+    }
+
+    // searching for repositories for a given userName
+    fun onSearch(query: String) {
         viewModelScope.launch {
-
-            val values = repository.getRepositories(userName = "IvaDibitanzlova")
-            Log.d("test", "test - values " + values.size)
-            for (i in 0 until values.size) {
-                Log.d("test", "test - value " + values.get(i).name)
+            val repositoryResponse = repository.getRepositories(query)
+            if (repositoryResponse.listRepositories.isEmpty()) {
+                if (repositoryResponse.httpStatusCode.value == 404) {
+                    // no user with a given userName was found
+                    _state.update { currentState ->
+                        currentState.copy(
+                            repositories = emptyList(),
+                            showNoUserFound = true,
+                            showNoRepositoriesFound = false
+                        )
+                    }
+                } else {
+                    // no public repositories for a given userName were found
+                    _state.update { currentState ->
+                        currentState.copy(
+                            repositories = emptyList(),
+                            showNoRepositoriesFound = true,
+                            showNoUserFound = false
+                        )
+                    }
+                }
+            } else {
+                // public repositories were found
+                _state.update { currentState ->
+                    currentState.copy(
+                        repositories = repositoryResponse.listRepositories,
+                        showNoRepositoriesFound = false,
+                        showNoUserFound = false
+                    )
+                }
             }
-
-            // _status.value = repository.getData()[0]
         }
     }
 }

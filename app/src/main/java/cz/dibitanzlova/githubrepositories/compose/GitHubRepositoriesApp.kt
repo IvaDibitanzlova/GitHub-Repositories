@@ -29,7 +29,7 @@ fun GitHubRepositoriesNavHost(
             HomeScreen(
                 viewModel = hiltViewModel(),
                 onRepositoryClick = {
-                    navController.navigate("detail/${it.name}")
+                    navController.navigate("detail/${it.userName}/${it.repositoryName}")
                 },
                 onAboutClick = {
                     navController.navigate("about")
@@ -37,10 +37,11 @@ fun GitHubRepositoriesNavHost(
             )
         }
         composable(
-            "detail/{userId}",
-            arguments = listOf(navArgument("userId") {
-                type = NavType.StringType
-            })
+            "detail/{userName}/{repositoryName}",
+            arguments = listOf(
+                navArgument("userName") { type = NavType.StringType },
+                navArgument("repositoryName") { type = NavType.StringType }
+            )
         ) {
             DetailScreen(
                 viewModel = hiltViewModel(),

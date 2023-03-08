@@ -6,4 +6,10 @@
     <string name="version">Verze:</string>
     <string name="date_of_build">Datum sestavení:</string>
     <string name="author">Autor:</string>
+    <string name="icon_search_description">Hledat</string>
+    <string name="search_placeholder">Vyhledat uživatele</string>
+    <string name="no_repositories_found">Uživatel nemá vytvořeny žádné veřejné repozitáře</string>
+    <string name="user_not_found">Zadaný uživatel nebyl nalezen</string>
+    <string name="title_branches">Větve repozitáře</string>
+    <string name="title_commits">Poslední commity</string>
 </resources>
