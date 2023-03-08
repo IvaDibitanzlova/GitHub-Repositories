@@ -1,11 +1,8 @@
 package cz.dibitanzlova.githubrepositories.compose.about
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,11 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cz.dibitanzlova.githubrepositories.R
-import cz.dibitanzlova.githubrepositories.compose.detail.DetailScreenMainComposable
-import cz.dibitanzlova.githubrepositories.model.DetailState
 import cz.dibitanzlova.githubrepositories.viewmodels.AboutViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
     viewModel: AboutViewModel,
@@ -62,34 +56,51 @@ fun AboutScreenMainComposable(
         },
         content = { innerPadding ->
             Column(
-                modifier = Modifier.padding(innerPadding).fillMaxWidth().fillMaxHeight(),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Row(horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(4.dp)
+                ) {
                     Text(
                         text = stringResource(R.string.version),
                         fontWeight = FontWeight.Bold,
                     )
-                    Text(text = version,
-                        modifier = Modifier.offset(x = 5.dp))
+                    Text(
+                        text = version,
+                        modifier = Modifier.offset(x = 5.dp)
+                    )
                 }
-                Row(horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)) {
-                    Text(text = stringResource(R.string.date_of_build),
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.date_of_build),
                         fontWeight = FontWeight.Bold,
                     )
-                    Text(text = dateOfBuild,
-                        modifier = Modifier.offset(x = 5.dp))
+                    Text(
+                        text = dateOfBuild,
+                        modifier = Modifier.offset(x = 5.dp)
+                    )
                 }
-                Row(horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)) {
-                    Text(text = stringResource(R.string.author),
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.author),
                         fontWeight = FontWeight.Bold,
                     )
-                    Text(text = author,
-                        modifier = Modifier.offset(x = 5.dp))
+                    Text(
+                        text = author,
+                        modifier = Modifier.offset(x = 5.dp)
+                    )
                 }
             }
         }

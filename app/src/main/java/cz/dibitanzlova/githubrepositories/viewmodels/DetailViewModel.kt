@@ -28,15 +28,42 @@ class DetailViewModel @Inject internal constructor(
 
     init {
         viewModelScope.launch {
+            // show progress indicators
             _state.update { currentState ->
                 currentState.copy(
-                    branches = repository.getBranches(userName, repositoryName)
+                    isBranchesProgressShown = true,
+                    isCommitsProgressShown = true,
+                    showNoConnection = false
                 )
             }
+
+            // load data and dismiss progress indicators
             _state.update { currentState ->
                 currentState.copy(
-                    commits = repository.getCommits(userName, repositoryName)
+                    branches = repository.getBranches(userName, repositoryName),
+                    isBranchesProgressShown = false
                 )
+            }
+            val commitResponse = repository.getCommits(userName, repositoryName)
+            if (commitResponse.httpStatusCode.value == 0) {
+                // no internet connection
+                _state.update { currentState ->
+                    currentState.copy(
+                        branches = emptyList(),
+                        commits = emptyList(),
+                        isBranchesProgressShown = false,
+                        isCommitsProgressShown = false,
+                        showNoConnection = true
+                    )
+                }
+            } else {
+                _state.update { currentState ->
+                    currentState.copy(
+                        commits = commitResponse.listCommits,
+                        isCommitsProgressShown = false,
+                        showNoConnection = false
+                    )
+                }
             }
         }
     }

@@ -11,4 +11,5 @@
     <string name="user_not_found">User with this username was not found</string>
     <string name="title_branches">Branches</string>
     <string name="title_commits">Last commits</string>
+    <string name="no_connection">There is no internet connection</string>
 </resources>

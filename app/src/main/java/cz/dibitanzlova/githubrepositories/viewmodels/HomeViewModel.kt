@@ -20,6 +20,8 @@ class HomeViewModel @Inject internal constructor(
     private val repository: GitHubDataRepository,
 ) : ViewModel() {
 
+    private val userNameRegex = "^[A-Za-z][A-Za-z0-9_-]{1,39}\$"
+
     private val _state = MutableStateFlow(HomeState("", emptyList()))
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
@@ -33,6 +35,30 @@ class HomeViewModel @Inject internal constructor(
     // searching for repositories for a given userName
     fun onSearch(query: String) {
         viewModelScope.launch {
+
+            // validation - if it's not correct username on GitHub, return
+            if (!query.matches(Regex(userNameRegex))) {
+                _state.update { currentState ->
+                    currentState.copy(
+                        repositories = emptyList(),
+                        showNoUserFound = true,
+                        showNoRepositoriesFound = false,
+                        isProgressShown = false
+                    )
+                }
+                return@launch
+            }
+
+            // show loading indicator
+            _state.update { currentState ->
+                currentState.copy(
+                    repositories = emptyList(),
+                    showNoUserFound = false,
+                    showNoRepositoriesFound = false,
+                    isProgressShown = true
+                )
+            }
+
             val repositoryResponse = repository.getRepositories(query)
             if (repositoryResponse.listRepositories.isEmpty()) {
                 if (repositoryResponse.httpStatusCode.value == 404) {
@@ -41,7 +67,20 @@ class HomeViewModel @Inject internal constructor(
                         currentState.copy(
                             repositories = emptyList(),
                             showNoUserFound = true,
-                            showNoRepositoriesFound = false
+                            showNoRepositoriesFound = false,
+                            showNoConnection = false,
+                            isProgressShown = false
+                        )
+                    }
+                } else if (repositoryResponse.httpStatusCode.value == 0) {
+                    // no internet connection
+                    _state.update { currentState ->
+                        currentState.copy(
+                            repositories = emptyList(),
+                            showNoUserFound = false,
+                            showNoRepositoriesFound = false,
+                            showNoConnection = true,
+                            isProgressShown = false
                         )
                     }
                 } else {
@@ -50,7 +89,9 @@ class HomeViewModel @Inject internal constructor(
                         currentState.copy(
                             repositories = emptyList(),
                             showNoRepositoriesFound = true,
-                            showNoUserFound = false
+                            showNoConnection = false,
+                            showNoUserFound = false,
+                            isProgressShown = false
                         )
                     }
                 }
@@ -60,7 +101,9 @@ class HomeViewModel @Inject internal constructor(
                     currentState.copy(
                         repositories = repositoryResponse.listRepositories,
                         showNoRepositoriesFound = false,
-                        showNoUserFound = false
+                        showNoConnection = false,
+                        showNoUserFound = false,
+                        isProgressShown = false
                     )
                 }
             }

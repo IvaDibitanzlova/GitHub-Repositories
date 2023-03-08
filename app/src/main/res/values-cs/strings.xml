@@ -12,4 +12,5 @@
     <string name="user_not_found">Zadaný uživatel nebyl nalezen</string>
     <string name="title_branches">Větve repozitáře</string>
     <string name="title_commits">Poslední commity</string>
+    <string name="no_connection">Nejste připojeni k internetu</string>
 </resources>

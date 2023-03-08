@@ -1,7 +1,6 @@
 package cz.dibitanzlova.githubrepositories.data
 
 import cz.dibitanzlova.githubrepositories.model.Branch
-import cz.dibitanzlova.githubrepositories.model.Commit
 import cz.dibitanzlova.githubrepositories.model.CommitResponse
 import cz.dibitanzlova.githubrepositories.model.RepositoryResponse
 import cz.dibitanzlova.githubrepositories.network.GitHubRemoteDataSource
@@ -18,7 +17,7 @@ class GitHubDataRepository @Inject constructor(
         return gitHubRemoteDataSource.getBranches(userName, repositoryName)
     }
 
-    suspend fun getCommits(userName: String, repositoryName: String): List<CommitResponse> {
+    suspend fun getCommits(userName: String, repositoryName: String): CommitResponse {
         return gitHubRemoteDataSource.getCommits(userName, repositoryName)
     }
 }

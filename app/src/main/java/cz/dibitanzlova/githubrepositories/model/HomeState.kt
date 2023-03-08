@@ -5,4 +5,6 @@ data class HomeState(
     val repositories: List<Repository>,
     val showNoUserFound: Boolean = false,
     val showNoRepositoriesFound: Boolean = false,
+    val showNoConnection: Boolean = false,
+    val isProgressShown: Boolean = false
 )

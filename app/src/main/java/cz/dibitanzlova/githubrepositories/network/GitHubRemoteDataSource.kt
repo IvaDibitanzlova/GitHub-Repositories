@@ -1,7 +1,6 @@
 package cz.dibitanzlova.githubrepositories.network
 
 import cz.dibitanzlova.githubrepositories.model.Branch
-import cz.dibitanzlova.githubrepositories.model.Commit
 import cz.dibitanzlova.githubrepositories.model.CommitResponse
 import cz.dibitanzlova.githubrepositories.model.RepositoryResponse
 import io.ktor.client.*
@@ -18,7 +17,7 @@ interface GitHubRemoteDataSource {
 
     suspend fun getRepositories(userName: String): RepositoryResponse
     suspend fun getBranches(userName: String, repositoryName: String): List<Branch>
-    suspend fun getCommits(userName: String, repositoryName: String): List<CommitResponse>
+    suspend fun getCommits(userName: String, repositoryName: String): CommitResponse
 
     companion object {
         fun create(): GitHubRemoteDataSource {

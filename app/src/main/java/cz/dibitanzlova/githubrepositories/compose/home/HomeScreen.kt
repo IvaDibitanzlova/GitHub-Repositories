@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -74,8 +73,8 @@ fun HomeScreenMainComposable(
                     .padding(innerPadding)
                     .fillMaxWidth()
                     .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
                 SearchBar(
                     query = state.query,
@@ -93,30 +92,58 @@ fun HomeScreenMainComposable(
                         Text(
                             stringResource(id = R.string.search_placeholder)
                         )
-                    }
+                    },
+                    tonalElevation = 0.dp
                 ) {
-                    if (state.showNoUserFound) {
-                        Text(
-                            stringResource(id = R.string.user_not_found),
-                            Modifier.align(CenterHorizontally).padding(20.dp)
-                        )
-                    } else if (state.showNoRepositoriesFound) {
-                        Text(
-                            stringResource(id = R.string.no_repositories_found),
-                            Modifier.align(CenterHorizontally).padding(20.dp)
+                    if (state.isProgressShown) {
+                        CircularProgressIndicator(
+                            modifier = modifier
+                                .align(CenterHorizontally)
+                                .padding(top = 20.dp)
                         )
                     } else {
-                        LazyColumn(modifier = Modifier.fillMaxHeight().padding(top = 20.dp)) {
-                            items(items = state.repositories, itemContent = { item ->
-                                Column {
-                                    ListItem(
-                                        headlineText = { Text(item.name) },
-                                        supportingText = { Text(item.description) },
-                                        modifier = modifier.clickable { onRepositoryClick(DetailRepository(state.query, item.name)) }
-                                    )
-                                    Divider()
-                                }
-                            })
+                        if (state.showNoUserFound) {
+                            Text(
+                                stringResource(id = R.string.user_not_found),
+                                Modifier
+                                    .align(CenterHorizontally)
+                                    .padding(20.dp)
+                            )
+                        } else if (state.showNoRepositoriesFound) {
+                            Text(
+                                stringResource(id = R.string.no_repositories_found),
+                                Modifier
+                                    .align(CenterHorizontally)
+                                    .padding(20.dp)
+                            )
+                        } else if (state.showNoConnection) {
+                            Text(
+                                stringResource(id = R.string.no_connection),
+                                Modifier
+                                    .align(CenterHorizontally)
+                                    .padding(20.dp)
+                            )
+                        } else {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .padding(top = 20.dp)
+                            ) {
+                                items(items = state.repositories, itemContent = { item ->
+                                    Column {
+                                        ListItem(
+                                            headlineText = { Text(item.name) },
+                                            supportingText = { Text(item.description) },
+                                            modifier = modifier.clickable {
+                                                onRepositoryClick(
+                                                    DetailRepository(state.query, item.name)
+                                                )
+                                            }
+                                        )
+                                        Divider()
+                                    }
+                                })
+                            }
                         }
                     }
                 }
