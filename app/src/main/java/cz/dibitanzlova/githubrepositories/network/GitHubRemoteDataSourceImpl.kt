@@ -61,7 +61,11 @@ class GitHubRemoteDataSourceImpl(
 
     override suspend fun getCommits(userName: String, repositoryName: String): List<CommitResponse> {
         return try {
-            client.get(baseURL + "/repos/${userName}/${repositoryName}/commits").body()
+            client.get(baseURL + "/repos/${userName}/${repositoryName}/commits") {
+            url {
+                parameters.append("per_page", "10")
+            }
+        }.body()
         } catch (ex: RedirectResponseException) {
             // 3xx - responses
             Log.e("error", ex.response.status.description)

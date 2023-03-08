@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import cz.dibitanzlova.githubrepositories.R
 import cz.dibitanzlova.githubrepositories.model.*
 import cz.dibitanzlova.githubrepositories.viewmodels.DetailViewModel
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +48,8 @@ fun DetailScreenMainComposable(
     onBackClick: () -> Unit = {},
     onAboutClick: () -> Unit = {}
 ) {
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -69,47 +74,53 @@ fun DetailScreenMainComposable(
             )
         },
         content = { innerPadding ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
-                Text(
-                    text = stringResource(R.string.title_branches),
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = modifier.padding(15.dp)
-                )
-                LazyColumn(modifier = Modifier.padding(bottom = 20.dp)) {
-                    items(items = state.branches, itemContent = { item ->
-                        Column {
-                            ListItem(
-                                headlineText = { Text(item.name) }
-                            )
-                            Divider()
-                        }
-                    })
+                item {
+                    Text(
+                        text = stringResource(R.string.title_branches),
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = modifier.padding(15.dp)
+                    )
                 }
-                Text(
-                    text = stringResource(R.string.title_commits),
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = modifier.padding(15.dp)
-                )
-                LazyColumn(modifier = modifier) {
-                    items(items = state.commits, itemContent = { item ->
-                        Column {
-                            ListItem(
-                                headlineText = { Text(item.commit.message) },
-                                supportingText = {
-                                    Row(modifier = modifier) {
-                                        Text(item.commit.author.date)
-                                        Text(item.commit.author.name)
-                                    }
+                items(state.branches) { item ->
+                    Column(modifier = Modifier.padding(bottom = 20.dp)) {
+                        ListItem(
+                            headlineText = { Text(item.name) }
+                        )
+                        Divider()
+                    }
+                }
+
+                item {
+                    Text(
+                        text = stringResource(R.string.title_commits),
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = modifier.padding(15.dp)
+                    )
+                }
+                items(state.commits) { item ->
+                    Column {
+                        ListItem(
+                            headlineText = { Text(item.commit.message) },
+                            supportingText = {
+                                Row(
+                                    modifier = modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 14.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                ) {
+                                    Text(item.commit.author.name)
+                                    Text((DateFormat.getDateTimeInstance().format(formatter.parse(item.commit.author.date)!!)))
                                 }
-                            )
-                            Divider()
-                        }
-                    })
+                            }
+                        )
+                        Divider()
+                    }
                 }
             }
         }
