@@ -3,8 +3,8 @@ package cz.dibitanzlova.githubrepositories.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import cz.dibitanzlova.githubrepositories.BuildConfig
+import cz.dibitanzlova.githubrepositories.utils.DateTimeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.DateFormat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,6 +13,6 @@ class AboutViewModel @Inject internal constructor(
 ) : ViewModel() {
     val author = "Iva Dibitanzlová"
     val version = BuildConfig.VERSION_NAME
-    val dateOfBuild: String = DateFormat.getDateInstance().format(BuildConfig.BUILD_TIME.toLong())
+    val dateOfBuild: String = DateTimeUtils.getFormattedTime(BuildConfig.BUILD_TIME.toLong())
 
 }
