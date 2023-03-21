@@ -8,7 +8,7 @@ import cz.dibitanzlova.githubrepositories.ui.theme.GitHubRepositoriesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class GitHubRepositoriesActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
