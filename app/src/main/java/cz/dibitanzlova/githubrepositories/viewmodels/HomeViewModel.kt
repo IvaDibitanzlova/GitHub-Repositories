@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.dibitanzlova.githubrepositories.data.GitHubDataRepository
 import cz.dibitanzlova.githubrepositories.model.HomeState
+import cz.dibitanzlova.githubrepositories.utils.TextValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,8 +20,6 @@ class HomeViewModel @Inject internal constructor(
     private val savedStateHandle: SavedStateHandle,
     private val repository: GitHubDataRepository,
 ) : ViewModel() {
-
-    private val userNameRegex = "^[A-Za-z][A-Za-z0-9_-]{1,39}\$"
 
     private val _state = MutableStateFlow(HomeState("", emptyList()))
     val state: StateFlow<HomeState> = _state.asStateFlow()
@@ -37,7 +36,7 @@ class HomeViewModel @Inject internal constructor(
         viewModelScope.launch {
 
             // validation - if it's not correct username on GitHub, return
-            if (!query.matches(Regex(userNameRegex))) {
+            if (!TextValidator.isCorrectGitUsername(query)) {
                 _state.update { currentState ->
                     currentState.copy(
                         repositories = emptyList(),
