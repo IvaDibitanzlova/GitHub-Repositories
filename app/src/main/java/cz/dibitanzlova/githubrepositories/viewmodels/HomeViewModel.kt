@@ -37,61 +37,27 @@ class HomeViewModel @Inject internal constructor(
 
             // validation - if it's not correct username on GitHub, return
             if (!TextValidator.isCorrectGitUsername(query)) {
-                _state.update { currentState ->
-                    currentState.copy(
-                        repositories = emptyList(),
-                        showNoUserFound = true,
-                        showNoRepositoriesFound = false,
-                        isProgressShown = false
-                    )
-                }
+                showError(Error.SHOW_NO_USER_FOUND)
                 return@launch
             }
 
             // show loading indicator
-            _state.update { currentState ->
-                currentState.copy(
-                    repositories = emptyList(),
-                    showNoUserFound = false,
-                    showNoRepositoriesFound = false,
-                    isProgressShown = true
-                )
-            }
+            showProgress()
 
             val repositoryResponse = repository.getRepositories(query)
             if (repositoryResponse.listRepositories.isEmpty()) {
-                if (repositoryResponse.httpStatusCode.value == 404) {
-                    // no user with a given userName was found
-                    _state.update { currentState ->
-                        currentState.copy(
-                            repositories = emptyList(),
-                            showNoUserFound = true,
-                            showNoRepositoriesFound = false,
-                            showNoConnection = false,
-                            isProgressShown = false
-                        )
+                when (repositoryResponse.httpStatusCode.value) {
+                    404 -> {
+                        // no user with a given userName was found
+                        showError(Error.SHOW_NO_USER_FOUND)
                     }
-                } else if (repositoryResponse.httpStatusCode.value == 0) {
-                    // no internet connection
-                    _state.update { currentState ->
-                        currentState.copy(
-                            repositories = emptyList(),
-                            showNoUserFound = false,
-                            showNoRepositoriesFound = false,
-                            showNoConnection = true,
-                            isProgressShown = false
-                        )
+                    0 -> {
+                        // no internet connection
+                        showError(Error.SHOW_NO_CONNECTION)
                     }
-                } else {
-                    // no public repositories for a given userName were found
-                    _state.update { currentState ->
-                        currentState.copy(
-                            repositories = emptyList(),
-                            showNoRepositoriesFound = true,
-                            showNoConnection = false,
-                            showNoUserFound = false,
-                            isProgressShown = false
-                        )
+                    else -> {
+                        // no public repositories for a given userName were found
+                        showError(Error.SHOW_NO_REPOSITORIES_FOUND)
                     }
                 }
             } else {
@@ -107,5 +73,33 @@ class HomeViewModel @Inject internal constructor(
                 }
             }
         }
+    }
+
+    private fun showError(error: Error) {
+        _state.update { currentState ->
+            currentState.copy(
+                repositories = emptyList(),
+                showNoRepositoriesFound = error == Error.SHOW_NO_REPOSITORIES_FOUND,
+                showNoConnection = error == Error.SHOW_NO_CONNECTION,
+                showNoUserFound = error == Error.SHOW_NO_USER_FOUND,
+                isProgressShown = false
+            )
+        }
+    }
+
+    private fun showProgress() {
+        _state.update { currentState ->
+            currentState.copy(
+                repositories = emptyList(),
+                showNoConnection = false,
+                showNoUserFound = false,
+                showNoRepositoriesFound = false,
+                isProgressShown = true
+            )
+        }
+    }
+
+    private enum class Error {
+        SHOW_NO_REPOSITORIES_FOUND, SHOW_NO_CONNECTION, SHOW_NO_USER_FOUND
     }
 }
