@@ -19,7 +19,7 @@ class GitHubRemoteDataSourceImpl(
 
     override suspend fun getRepositories(userName: String): RepositoryResponse {
         return try {
-            val response = client.get(baseURL + "/users/${userName}/repos")
+            val response = client.get("${baseURL}/users/${userName}/repos")
             RepositoryResponse(response.body(), response.status)
         } catch (ex: Exception) {
             when (ex) {
@@ -44,7 +44,7 @@ class GitHubRemoteDataSourceImpl(
 
     override suspend fun getBranches(userName: String, repositoryName: String): List<Branch> {
         return try {
-            client.get(baseURL + "/repos/${userName}/${repositoryName}/branches").body()
+            client.get("${baseURL}/repos/${userName}/${repositoryName}/branches").body()
         } catch (ex: Exception) {
             when (ex) {
                 is ServerResponseException -> getBranchesError(
@@ -65,7 +65,7 @@ class GitHubRemoteDataSourceImpl(
 
     override suspend fun getCommits(userName: String, repositoryName: String): CommitResponse {
         return try {
-            val response = client.get(baseURL + "/repos/${userName}/${repositoryName}/commits") {
+            val response = client.get("${baseURL}/repos/${userName}/${repositoryName}/commits") {
                 url {
                     parameters.append("per_page", "10")
                 }
