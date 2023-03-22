@@ -119,7 +119,7 @@ fun HomeScreenMainComposable(
                                     Column {
                                         ListItem(
                                             headlineText = { Text(item.name) },
-                                            supportingText = { Text(item.description) },
+                                            supportingText = { Text(item.description ?: "")},
                                             modifier = modifier.clickable {
                                                 onRepositoryClick(
                                                     DetailRepository(state.query, item.name)
