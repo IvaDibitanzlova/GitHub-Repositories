@@ -21,48 +21,45 @@ class GitHubRemoteDataSourceImpl(
         return try {
             val response = client.get(baseURL + "/users/${userName}/repos")
             RepositoryResponse(response.body(), response.status)
-        } catch (ex: RedirectResponseException) {
-            // 3xx - responses
-            Log.e("error", ex.response.status.description)
-            RepositoryResponse(emptyList(), ex.response.status)
-        } catch (ex: ClientRequestException) {
-            // 4xx - responses
-            Log.e("error", ex.response.status.description)
-            RepositoryResponse(emptyList(), ex.response.status)
-        } catch (ex: ServerResponseException) {
-            // 5xx - responses
-            Log.e("error", ex.response.status.description)
-            RepositoryResponse(emptyList(), ex.response.status)
-        } catch (ex: JsonConvertException) {
-            Log.e("error", "message " + ex.message)
-            RepositoryResponse(emptyList(), HttpStatusCode(1, "json convert exception"))
-        } catch (ex: UnknownHostException) {
-            Log.e("error", "message " + ex.message)
-            RepositoryResponse(emptyList(), HttpStatusCode(0, "no internet connection"))
+        } catch (ex: Exception) {
+            when (ex) {
+                is ServerResponseException -> getRepositoriesError(
+                    ex.response.status.description,
+                    ex.response.status
+                )
+                is JsonConvertException -> getRepositoriesError(
+                    ex.message.toString(),
+                    HttpStatusCode(1, "json convert exception")
+                )
+                is UnknownHostException -> getRepositoriesError(
+                    ex.message.toString(),
+                    HttpStatusCode(0, "no internet connection")
+                )
+                else -> {
+                    getRepositoriesError(ex.message.toString(), HttpStatusCode(100, "fetch repositories error"))
+                }
+            }
         }
     }
 
     override suspend fun getBranches(userName: String, repositoryName: String): List<Branch> {
         return try {
             client.get(baseURL + "/repos/${userName}/${repositoryName}/branches").body()
-        } catch (ex: RedirectResponseException) {
-            // 3xx - responses
-            Log.e("error", ex.response.status.description)
-            emptyList()
-        } catch (ex: ClientRequestException) {
-            // 4xx - responses
-            Log.e("error", ex.response.status.description)
-            emptyList()
-        } catch (ex: ServerResponseException) {
-            // 5xx - responses
-            Log.e("error", ex.response.status.description)
-            emptyList()
-        } catch (ex: JsonConvertException) {
-            Log.e("error", "message " + ex.message)
-            emptyList()
-        } catch (ex: UnknownHostException) {
-            Log.e("error", "message " + ex.message)
-            emptyList()
+        } catch (ex: Exception) {
+            when (ex) {
+                is ServerResponseException -> getBranchesError(
+                    ex.response.status.description
+                )
+                is JsonConvertException -> getBranchesError(
+                    ex.message.toString()
+                )
+                is UnknownHostException -> getBranchesError(
+                    ex.message.toString()
+                )
+                else -> {
+                    getBranchesError(ex.message.toString())
+                }
+            }
         }
     }
 
@@ -74,24 +71,47 @@ class GitHubRemoteDataSourceImpl(
                 }
             }
             CommitResponse(response.body(), response.status)
-        } catch (ex: RedirectResponseException) {
-            // 3xx - responses
-            Log.e("error", ex.response.status.description)
-            CommitResponse(emptyList(), ex.response.status)
-        } catch (ex: ClientRequestException) {
-            // 4xx - responses
-            Log.e("error", ex.response.status.description)
-            CommitResponse(emptyList(), ex.response.status)
-        } catch (ex: ServerResponseException) {
-            // 5xx - responses
-            Log.e("error", ex.response.status.description)
-            CommitResponse(emptyList(), ex.response.status)
-        } catch (ex: JsonConvertException) {
-            Log.e("error", "message " + ex.message)
-            CommitResponse(emptyList(), HttpStatusCode(1, "json convert exception"))
-        } catch (ex: UnknownHostException) {
-            Log.e("error", "message " + ex.message)
-            CommitResponse(emptyList(), HttpStatusCode(0, "no internet connection"))
+        } catch (ex: Exception) {
+            when (ex) {
+                is ServerResponseException -> getCommitsError(
+                    ex.response.status.description,
+                    ex.response.status
+                )
+                is JsonConvertException -> getCommitsError(
+                    ex.message.toString(),
+                    HttpStatusCode(1, "json convert exception")
+                )
+                is UnknownHostException -> getCommitsError(
+                    ex.message.toString(),
+                    HttpStatusCode(0, "no internet connection")
+                )
+                else -> {
+                    getCommitsError(ex.message.toString(), HttpStatusCode(100, "fetch repositories error"))
+                }
+            }
         }
+    }
+
+    private fun getRepositoriesError(
+        description: String,
+        status: HttpStatusCode
+    ): RepositoryResponse {
+        Log.e("error", "message $description")
+        return RepositoryResponse(emptyList(), status)
+    }
+
+    private fun getBranchesError(
+        description: String
+    ): List<Branch> {
+        Log.e("error", "message $description")
+        return emptyList()
+    }
+
+    private fun getCommitsError(
+        description: String,
+        status: HttpStatusCode
+    ): CommitResponse {
+        Log.e("error", "message $description")
+        return CommitResponse(emptyList(), status)
     }
 }
