@@ -17,9 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cz.dibitanzlova.githubrepositories.R
 import cz.dibitanzlova.githubrepositories.model.*
+import cz.dibitanzlova.githubrepositories.utils.DateTimeUtils
 import cz.dibitanzlova.githubrepositories.viewmodels.DetailViewModel
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,8 +47,6 @@ fun DetailScreenMainComposable(
     onBackClick: () -> Unit = {},
     onAboutClick: () -> Unit = {}
 ) {
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-    inputFormat.timeZone = TimeZone.getTimeZone("UTC")
 
     Scaffold(
         topBar = {
@@ -152,8 +149,8 @@ fun DetailScreenMainComposable(
                                         ) {
                                             Text(item.commit.author.name)
                                             Text(
-                                                (DateFormat.getDateTimeInstance()
-                                                    .format((inputFormat.parse(item.commit.author.date)!!)))
+                                                (DateTimeUtils.getParsedDateTime(item.commit.author.date)
+                                                    .toString())
                                             )
                                         }
                                     }

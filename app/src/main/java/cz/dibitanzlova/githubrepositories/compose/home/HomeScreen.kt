@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -103,26 +104,11 @@ fun HomeScreenMainComposable(
                         )
                     } else {
                         if (state.showNoUserFound) {
-                            Text(
-                                stringResource(id = R.string.user_not_found),
-                                Modifier
-                                    .align(CenterHorizontally)
-                                    .padding(20.dp)
-                            )
+                            ErrorText(text = stringResource(id = R.string.user_not_found))
                         } else if (state.showNoRepositoriesFound) {
-                            Text(
-                                stringResource(id = R.string.no_repositories_found),
-                                Modifier
-                                    .align(CenterHorizontally)
-                                    .padding(20.dp)
-                            )
+                            ErrorText(text = stringResource(id = R.string.no_repositories_found))
                         } else if (state.showNoConnection) {
-                            Text(
-                                stringResource(id = R.string.no_connection),
-                                Modifier
-                                    .align(CenterHorizontally)
-                                    .padding(20.dp)
-                            )
+                            ErrorText(text = stringResource(id = R.string.no_connection))
                         } else {
                             LazyColumn(
                                 modifier = Modifier
@@ -149,6 +135,16 @@ fun HomeScreenMainComposable(
                 }
             }
         }
+    )
+}
+
+@Composable
+fun ColumnScope.ErrorText(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text,
+        modifier
+            .align(CenterHorizontally)
+            .padding(20.dp)
     )
 }
 

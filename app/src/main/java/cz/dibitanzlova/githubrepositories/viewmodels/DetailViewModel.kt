@@ -1,6 +1,5 @@
 package cz.dibitanzlova.githubrepositories.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject internal constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val repository: GitHubDataRepository,
 ) : ViewModel() {
 
@@ -29,13 +28,7 @@ class DetailViewModel @Inject internal constructor(
     init {
         viewModelScope.launch {
             // show progress indicators
-            _state.update { currentState ->
-                currentState.copy(
-                    isBranchesProgressShown = true,
-                    isCommitsProgressShown = true,
-                    showNoConnection = false
-                )
-            }
+            showProgress()
 
             // load data and dismiss progress indicators
             _state.update { currentState ->
@@ -47,15 +40,7 @@ class DetailViewModel @Inject internal constructor(
             val commitResponse = repository.getCommits(userName, repositoryName)
             if (commitResponse.httpStatusCode.value == 0) {
                 // no internet connection
-                _state.update { currentState ->
-                    currentState.copy(
-                        branches = emptyList(),
-                        commits = emptyList(),
-                        isBranchesProgressShown = false,
-                        isCommitsProgressShown = false,
-                        showNoConnection = true
-                    )
-                }
+                showConnectionError()
             } else {
                 _state.update { currentState ->
                     currentState.copy(
@@ -65,6 +50,28 @@ class DetailViewModel @Inject internal constructor(
                     )
                 }
             }
+        }
+    }
+
+    private fun showProgress() {
+        _state.update { currentState ->
+            currentState.copy(
+                isBranchesProgressShown = true,
+                isCommitsProgressShown = true,
+                showNoConnection = false
+            )
+        }
+    }
+
+    private fun showConnectionError() {
+        _state.update { currentState ->
+            currentState.copy(
+                branches = emptyList(),
+                commits = emptyList(),
+                isBranchesProgressShown = false,
+                isCommitsProgressShown = false,
+                showNoConnection = true
+            )
         }
     }
 

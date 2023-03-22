@@ -63,48 +63,29 @@ fun AboutScreenMainComposable(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.version),
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = version,
-                        modifier = Modifier.offset(x = 5.dp)
-                    )
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.date_of_build),
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = dateOfBuild,
-                        modifier = Modifier.offset(x = 5.dp)
-                    )
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.author),
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = author,
-                        modifier = Modifier.offset(x = 5.dp)
-                    )
-                }
+                RowText(stringResource(R.string.version), version)
+                RowText(stringResource(R.string.date_of_build), dateOfBuild)
+                RowText(stringResource(R.string.author), author)
             }
         }
     )
+}
+
+@Composable
+fun RowText(header: String, content: String) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Text(
+            text = header,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = content,
+            modifier = Modifier.offset(x = 5.dp)
+        )
+    }
 }
 
 @Preview
